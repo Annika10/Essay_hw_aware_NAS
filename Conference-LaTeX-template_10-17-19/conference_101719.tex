@@ -40,6 +40,20 @@ component, formatting, style, styling, insert
 This document is a model and instructions for \LaTeX.
 Please observe the conference page limits. 
 
+Deep learning models consists of layers and parameters. It is difficult to design the number and type of nodes and the connection between them because of the multiple differences in data types, tasks and hardware platforms. Therefore, most of the deep learning models are created by hand with multiple experiments or are a variation of already known models which work well. This process of creating and designing a model is very time-consuming, therefore techniques are created in the last years to automate the designing process of a deep learning model. It is called Neural Architecture Search (NAS). The focus of the survey is a subgroup of NAS, the harware or platform-aware NAS (HW-NAS). The goal of HW-NAS is to use NAS for designing a deep learning model but with respect to optimize the deep learning model for a hardware device.  
+
+A neural architecture process firstly includes a search space which includes the possible operators and its connections which create a architecture. The search strategy explores the search space and the evaluation methodology is used to evalute the accuracy of each model. The evaluation methodology trains the architecture and the models with a high accuracy help to redefine the search space. This training and in general the hugh number of architecture in forms of layers and parameters cause time consumption and large memory footprints. This leads to the lack of using NAS in real-time. 
+
+\section{Background}
+As mentioned above the drawbacks of large deep learning models and long training there are some techniques to optimize it.
+
+Firstly you can compress a model. Compressing a model can be done for example by compact the model which changes the standard operations to more flexible and simpler operations. In addition, one can decompose the tensor which means we shrinking the tensors which reduce the size of the deep learning model. What we will mainly focus on for compressing a model is quantization. Quantizations means that we convert floating point weights and activations into smaller integers, ideally binaries. Another option for compressing a model is pruning where the least important weights or operations are pruned to reduce the model size. The importance of a weight or operation can be directly the weight or has to be learned. 
+
+In addition one can apply hardware-aware NAS which uses model compressions and takes into account by design the model the hardware usability.  
+
+
+
+
 \section{Ease of Use}
 
 \subsection{Maintaining the Integrity of the Specifications}
