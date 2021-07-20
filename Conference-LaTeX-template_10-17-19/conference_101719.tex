@@ -23,7 +23,7 @@ annika.oesterdiekhoff@stud.uni-due.de}
 \maketitle
 
 \begin{abstract}
-Neural Architecture Search is a grown topic for automatically design deep learning models. With the raising of IoT and mobile devices, deep learning models have to be fitting on specific hardware. Therefore, we to give a brief overview about hardware-aware neural architecture search. 
+Neural Architecture Search is a grown topic for automatically design deep learning models. With the raising of IoT and mobile devices nowadays, deep learning models have to be fitting on specific hardware. Therefore, hardware-aware NAS is developed which does not only consider to maximize the accuracy of a deep learning model but also the hardware usability measured by FLOPs, model size, latency, energy consumption, etc. This paper gives a brief overview about hardware-aware neural architecture search by focusing on the problem definition of hardware-aware NAS, its search space and search strategy and its challenges and limitations.  
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -32,22 +32,30 @@ Hardware-aware Neural Architecture Search, Optimization, Hardware Platforms
 
 \section{Introduction}
 \label{section:Introduction}
-Deep learning models are gaining more and more interest in ... (examples + citiation). These models consist of various layers and parameters. It is difficult for the developer to design the number and type of nodes and the connection between them because of the multiple differences in data types, tasks and hardware platforms. Therefore, most of the deep learning models are created by hand with multiple experiments or are a variation of already known models which work well. This process of creating and designing a model is very time-consuming, therefore techniques are created in the last years to automate the designing process of a deep learning model. It is called Neural Architecture Search (NAS). The focus of the survey is a subgroup of NAS, the hardware or platform-aware NAS (HW-NAS). The goal of HW-NAS is to use NAS for designing a deep learning model but with respect to optimize the deep learning model for a hardware device. 
+Deep learning models are gaining more and more interest in various subjects for example in image recognition or Natural Language Processing (examples + citiation). These models consist of different layers and parameters. Layers are operators like convolution or activation whereas parameters also known as hyper-parameters are pre-defined properties of the architecture or the training algorithm. Architecture Parameters are for example the stride and filter of an convolution layer whereas a training parameter can be the number or epochs.
 
-In the following we define a NAS process in Section \ref{section:NASDefinition}. In Section \ref{section:ModelOptimization} possible ways to optimize a deep learning model are listed. We distinguish between single-objective and multi-objective optimization in Section \ref{section:ProblemFormulation}. After defining the GOALS? in Section \ref{section:Goals}, possible hardware platforms are listed in Section \ref{section:HWPlatforms}.
-The architecture and hardware search space are explained in Section \ref{section:SearchSpaces}. We go into detail with the accuracy evaluation method, the hardware cost evaluation method and the search algorithms in Section \ref{section:SearchStrategy}. ... missing ... and the Microsoft NNI Framework is presented in Section \ref{section:Frameworks}. In the end we define the challenges and limitations in Section \ref{section:Challenges} by speaking about benchmarking, transferability of AI models and transferability across different hardware platforms.  
+There exist a huge number of building up this deep learning model out of the layers and parameters. So, it is difficult for the developer to design the number and type of nodes and the connection between them because of the multiple differences in data types, tasks and hardware platforms. Therefore, most of the deep learning models are created by hand with multiple experiments or are a variation of already known models which work well. This process of creating and designing a model is very time-consuming and costly, therefore techniques are created in the last years to automate the designing process of a deep learning model. It is called Neural Architecture Search (NAS). The focus of this paper is a subgroup of NAS, the hardware or platform-aware NAS (HW-NAS). The goal of HW-NAS is to use NAS for designing a deep learning model but with respect to optimize the deep learning model for a hardware device. \textbf{... more possible ...}
+
+In the following we define a general NAS process in Section \ref{section:NASDefinition}. In Section \ref{section:ModelOptimization} possible ways to optimize a deep learning model are listed. We distinguish between single-objective and multi-objective optimization in Section \ref{section:ProblemFormulation}. After defining the GOALS? in Section \ref{section:Goals}, possible hardware platforms are listed in Section \ref{section:HWPlatforms}.
+The architecture and hardware search space are explained in Section \ref{section:SearchSpaces}. We go into detail with the accuracy evaluation method, the hardware cost evaluation method and the search algorithms in Section \ref{section:SearchStrategy}. ... missing ... and the Microsoft NNI Framework is shortly presented in Section \ref{section:Frameworks}. In the end we define the challenges and limitations in Section \ref{section:Challenges} by speaking about benchmarking, transferability of AI models and transferability across different hardware platforms.  
 
 \section{Neural Architecture Search Definition}
 \label{section:NASDefinition}
-A neural architecture process firstly includes a search space which consists of possible operators and its connections which create a architecture. The search strategy explores this search space. Then the evaluation methodology is used to evaluate the accuracy of each model. The evaluation methodology trains the architecture and the models with a high accuracy help to redefine the search space. This training and in general the  number of architecture in forms of layers and parameters cause time consumption and large memory footprints. This leads to a lack of using NAS in real-time. 
+A neural architecture process firstly includes a search space which consists of possible operators and its connections which create an architecture. The search strategy explores this search space and searches for possible architecture candidates. Then the evaluation methodology is used to evaluate the accuracy of each model. The evaluation methodology trains the architecture. The models with a high accuracy help to redefine the search space. The whole NAS process is shown in Figure \ref{fig:NASProcess}\cite{b8}. This training and in general the  number of architecture in forms of layers and parameters cause time consumption and large memory footprints. This leads to a lack of using NAS for constrained hardware or in real-time. Therefore, more and more research is focused on solving this issue by using NAS and developing hardware-aware NAS. 
+
+\begin{figure}[htbp]
+\includegraphics[width=0.5\textwidth]{NASProcess.png}
+\caption{NAS Process\cite{b8}}
+\label{fig:NASProcess}
+\end{figure}
 
 \section{Model Optimizations}
 \label{section:ModelOptimization}
-For solving the drawbacks mentioned above  to get large deep learning models and long training processes, there are some techniques to optimize it.
+For solving the drawbacks mentioned above of getting large deep learning models and long training processes, there are some techniques to optimize it.
 
-Firstly you can compress a model. Compressing a model can be done for example by compact the model which changes the standard operations to more flexible and simpler operations. In addition, one can decompose the tensor which means we shrink the tensors which reduces the size of the deep learning model. What we will mainly focus on for compressing a model is quantization. Quantizations means that we convert floating point weights and activation's into smaller integers, ideally binaries. Another option for compressing a model is pruning where the least important weights or operations are pruned to reduce the model size. The importance of a weight or operation can be the weight itself or has to be learned. 
+Firstly you can compress a model by decreasing the model size but gaining the same accuracy. Compressing a model can be done for example by compact the model which changes the standard operations to more flexible and simpler operations. In addition, one can decompose the tensor which means we shrink the tensors which reduces the size of the deep learning model. What we will mainly focus on for compressing a model is quantization. Quantizations means that we convert floating point weights and activation's into smaller integers, ideally binaries. Another option for compressing a model is pruning where the least important weights or operations are pruned to reduce the model size. The importance of a weight or operation can be the weight itself or has to be learned. 
 
-In addition one can apply hardware-aware NAS which uses model compression's and takes the hardware usability into account by design the model. A relatively new technique for optimizing a deep learning model is code transformation which optimizes the operators of an model.
+In addition one can apply hardware-aware NAS which uses model compression's and takes the hardware usability into account by searching the model from a set of architectures. A relatively new technique for optimizing a deep learning model is code transformation which optimizes the operators of an model for a specific hardware.
 
 \section{Hardware-Aware NAS Problem Formulation}
 \label{section:ProblemFormulation}
@@ -58,9 +66,9 @@ In the following we discuss the problem formulation of hardware-aware neural arc
 \max_{\alpha\epsilon A}\,f(\alpha, \delta)
 \end{equation}
 
-So, $A$ is the search space which includes the set of architectures and $\alpha$ is one architecture from this set. $\delta$ is the used data set and $f$ is the performance measure, i.e. the accuracy.  The formulation says that we try to find the architecture $\alpha$ of the search space $A$ which maximizes the accuracy $f$ for the used data set. 
+So, $A$ is the search space which includes the set of architectures and $\alpha$ is one architecture from this set. $\delta$ is the used data set and $f$ is the performance measure, i.e. the accuracy. The formulation says that we try to find the architecture $\alpha$ of the search space $A$ which maximizes the accuracy $f$ for the used data set $\delta$. 
  
-By doing hardware-aware neural architecture search one has not only the accuracy metric which should be maximized but also hardware objectives like for example latency. There exist different problem formulation for hardware-aware neural architecture search, the single and multi-objective optimization.
+By doing hardware-aware neural architecture search one has not only the accuracy metric which should be maximized but also hardware objectives like for example latency. There exist two different problem formulation for hardware-aware neural architecture search, the single and multi-objective optimization.
 
 \subsection{Single-Objective Optimization}
 
@@ -77,29 +85,25 @@ The difference to the single-objective optimization which is used in original NA
 
 So we now do not only have the accuracy which we have to optimize but various objectives, e.g. latency and energy consumption. These objectives can be conflicting each other for example try to have a minimal search space and gaining the best accuracy. When this occurs we can only try to find the Pareto-optimal solution. There exist two approaches for this. Firstly the scalarization method which includes the performance measurements $f$'s into one aggregation function like a weighted sum or weighted product. This transforms the multi-objective optimization into a single-objective optimization. Unfortunately by having fixed weights in the aggregation function, it could be that not all Pareto solutions are found. For solving this issue one can run multiple runs which on the other hand then again leads to more needed computing power etc. Another method to find the Pareto-optimal solution is defining heuristics. By doing this one does not form the multi-objective optimization problem into a single-objective one and therefore get a set of architectures as solutions along the Pareto front. 
 
-explain pareto 
+\textbf{explain pareto}
 
-\section{Goals?}
+\section{Goals of hardware-aware NAS}
 \label{section:Goals}
-There are three categories of goals of hardware-aware neural architecture search. Firstly, the category single target, fixed configurations where most hardware-aware NAS belongs to. Single target means that the neural architecture search tries to find the best architecture for one single target, for example for FPGAs. We divide this category further in hardware-aware search strategy and hardware-aware search space. The hardware-aware search strategy focuses on solving the neural architecture search as a multi-objective problem which means that the accuracy is taken into account as always but also some hardware measurements for example latency. The opposite to this is the hardware-aware search space where the neural architecture search works with only a pool of architectures. The bad working architectures on the target hardware are eliminated. It helps to have a prior knowledge for the target platform for creating the set of architectures. The neural architecture search considers then only the accuracy for this set of architectures and no hardware measurements.
+There are three categories of goals of hardware-aware neural architecture search. Firstly, the category single target, fixed configurations where most hardware-aware NAS belongs to. Single target means that the neural architecture search tries to find the best architecture for one single hardware target. We divide this category further in hardware-aware search strategy and hardware-aware search space. The hardware-aware search strategy focuses on solving the neural architecture search as a multi-objective problem which means that the accuracy is taken into account as always but also some hardware measurements for example latency. The opposite to this is the hardware-aware search space where the neural architecture search works with only a pool of architectures. The bad working architectures on the target hardware are eliminated. It helps to have a prior knowledge for the target platform for creating the set of architectures. The neural architecture search considers then only the accuracy for this set of architectures and no hardware measurements.
 
-The second category of goals of hardware-aware neural architecture search is single target, multiple configurations. This category focuses on searching the best architecture in terms of latency in combination to accuracy. 
+The second category of goals of hardware-aware neural architecture search is single target, multiple configurations. This category not only focusing on getting the highest accuracy. The goal is to find the best architecture in terms of the hardware specification in combination with the accuracy. So, one has multiple platform configurations and try to find the best one. 
 
-configurations? what do they mean?
-
-In addition, it exists the category multiple targets. This means one does not focus on one specific hardware like FPGAs but search for the best architecture for multiple hardware platforms. This approach is the most desirable one because it allows one to port the best architecture to different hardware platforms. But it is also the most challenging one because architectures perform differently on different hardware. 
+In addition, it exists the category multiple targets. This means one does not focus on one specific hardware like FPGAs but search for the best architecture for multiple hardware platforms. This approach is the most desirable one because it allows one to port the best architecture to different hardware platforms. But it is also the most challenging one because architectures perform differently on different hardware. We also consider this problem for having an architecture for multiple platforms in Section \ref{section:Challenges}.
 
 \section{Target Hardware Platforms}
 \label{section:HWPlatforms}
-There exits three different categories of target hardware platforms. Firstly the server processors which can be CPUs, GPUs, FPGAs and ASICs. Its goal is to maximize the accuracy. There is a increasing interest in adapting the neural architecture search for a specific hardware, but mostly up to now researcher do not take into account the constraints of each hardware platform. The second category are mobile devices which are widely used but do not have much memory and computational power. Therefore, more and more research is focused on gaining high accuracy by using constrained hardware. The last category are tiny devices which are devices that run deep learning model with very low power. 
+There exits three different categories of target hardware platforms. Firstly the server processors which can be CPUs, GPUs, FPGAs and ASICs. Its goal is to maximize the accuracy. There is a increasing interest in adapting the neural architecture search for a specific hardware for reducing training costs, but mostly up to now researcher do not take into account the constraints of each hardware platform. The second category are mobile devices which are widely used but do not have much memory and computational power. Therefore, more and more research is focused on gaining high accuracy by using constrained hardware. The last category are tiny devices which are devices that run deep learning model with very low power. 
 
 \section{Search Spaces}
 \label{section:SearchSpaces}
-
 There exist two search spaces for the search strategies for hardware-aware neural architecture search. 
 
 \subsection{Architecture Search Space}
-
 The first one is the Architecture Search Space. It defines a set of architectures which means a set of possible operators and their connections. For designing an architecture search space one can use a fixed architecture and only search for the best hyper-parameters. Unfortunately this needs some knowledge of the human which designs the architecture, but it reduces the size of the search space. On the other hand one can do a search without a fixed architecture and search for fitting operators and their connections. This does not need knowledge of the human how the architecture structure should look like but of course it produces a bigger search space size and with this also a longer search time. By searching for the best architecture without a fixed architecture one distinguishes between three types. Firstly one can have a layer-wise search space where the architecture is searched out of a set of operators. Another option is to use a cell-based search space. A cell is defined as a graph that includes feature transformations. A cell-based search space creates a architecture by repeating these cells. This mostly leads to a high accuracy but it limits the flexibility in hardware specialization. In addition, there exists the hierarchical search space. The architecture is build by constructing blocks out of a defined number of cells. This solves the missing flexibility of the cell-based search space (WHY?). 
 
 \subsection{Hardware Search Space}
@@ -413,6 +417,7 @@ citation first, followed by the original foreign-language citation \cite{b6}.
 \bibitem{b5} R. Nicole, ``Title of paper with only first word capitalized,'' J. Name Stand. Abbrev., in press.
 \bibitem{b6} Y. Yorozu, M. Hirano, K. Oka, and Y. Tagawa, ``Electron spectroscopy studies on magneto-optical media and plastic substrate interface,'' IEEE Transl. J. Magn. Japan, vol. 2, pp. 740--741, August 1987 [Digests 9th Annual Conf. Magnetics Japan, p. 301, 1982].
 \bibitem{b7} M. Young, The Technical Writer's Handbook. Mill Valley, CA: University Science, 1989.
+\bibitem{b8} Hadjer Benmeziane, Kaoutar El Maghraoui, Hamza Ouarnoughi, Smail Niar, Martin Wistuba, Naigang Wang, ``A Comprehensive Survey on Hardware-Aware Neural Architecture Search'', 2021
 \end{thebibliography}
 \vspace{12pt}
 \color{red}
