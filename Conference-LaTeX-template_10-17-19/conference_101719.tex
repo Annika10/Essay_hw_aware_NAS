@@ -40,10 +40,10 @@ In the following we define a general NAS process in Section \ref{section:NASDefi
 
 \section{Neural Architecture Search Definition}
 \label{section:NASDefinition}
-A neural architecture process firstly includes a \textbf{search space} which consists of possible operators and its connections which create an architecture. The \textbf{search strategy} explores this search space and searches for possible architecture candidates. Then the \textbf{evaluation methodology} is used to evaluate the accuracy of each model. The evaluation methodology trains the architecture. The models with a high accuracy help to redefine the search space. The whole NAS process is shown in Figure \ref{fig:NASProcess}\cite{bib8}. This training and in general the  number of architecture in forms of layers and parameters cause time consumption and large memory footprints. This leads to a lack of using NAS for constrained hardware or in real-time. Therefore, more and more research is focused on solving this issue by using NAS and developing hardware-aware NAS. 
+A neural architecture process firstly includes a \textbf{search space} which consists of possible operators and its connections which create an architecture. The \textbf{search strategy} explores this search space and searches for possible architecture candidates. Then the \textbf{evaluation methodology} is used to evaluate the accuracy of each model. The evaluation methodology trains the architecture. The models with a high accuracy help to redefine the search space. The whole NAS process is shown in Figure \ref{fig:NASProcess} \cite{bib1}. This training and in general the  number of architecture in forms of layers and parameters cause time consumption and large memory footprints. This leads to a lack of using NAS for constrained hardware or in real-time. Therefore, more and more research is focused on solving this issue by using NAS and developing hardware-aware NAS. 
 
 \begin{figure}[htbp]
-\includegraphics[width=0.5\textwidth]{NASProcess.png}
+\centerline{\includegraphics[width=\linewidth]{NASProcess.png}}
 \caption{NAS Process\cite{bib1}}
 \label{fig:NASProcess}
 \end{figure}
@@ -55,6 +55,14 @@ For solving the drawbacks mentioned above of getting large deep learning models 
 Firstly you can \textbf{compress a model} by decreasing the model size but gaining the same accuracy. Compressing a model can be done for example by \textit{compact the model} which changes the standard operations to more flexible and simpler operations. In addition, one can \textit{decompose the tensor} which means we shrink the tensors which reduces the size of the deep learning model. What we will mainly focus on for compressing a model is \textit{quantization}. Quantizations means that we convert floating point weights and activation's into smaller integers, ideally binaries. This change of representation can be different in each layer, this is called mixed-precision quantization. Another option for compressing a model is \textit{pruning} where the least important weights or operations are pruned to reduce the model size. The importance of a weight or operation can be the weight itself or has to be learned. There is put lots of effort the last years to automate mixed-precision quantization as well as the pruning. 
 
 In addition one can apply \textbf{hardware-aware NAS} which uses model compression's and takes the hardware usability into account by searching the model from a set of architectures. A relatively new technique for optimizing a deep learning model is \textbf{code transformation} which optimizes the operators of an model for a specific hardware.
+
+Figure \ref{fig:Optimization} \cite{bib1} shows the input and output of compression a model or applying hardware-aware NAS for optimizing a model.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=\linewidth]{Optimization.png}}
+\caption{The Process of optimizing a model by model compression or HW-NAS \cite{bib1}}
+\label{fig:Optimization}
+\end{figure}
 
 \section{Hardware-Aware NAS Problem Formulation}
 \label{section:ProblemFormulation}
@@ -86,7 +94,7 @@ So we now do not only have the accuracy which we have to optimize but various ob
 
 There exist two approaches for this. Firstly the \textbf{scalarization method} which includes the performance measurements $f$'s into one aggregation function like a weighted sum or weighted product. This transforms the multi-objective optimization into a single-objective optimization. Unfortunately by having fixed weights in the aggregation function, it could be that not all Pareto solutions are found. For solving this issue one can run multiple runs which on the other hand then again leads to more needed computing power etc. Another method to find the Pareto-optimal solution is defining \textbf{heuristics}. By doing this one does not form the multi-objective optimization problem into a single-objective one and therefore get a set of architectures as solutions along the Pareto front.
 
-The Figure \ref{fig:ProblemFormulation} is leaned on a figure of the survey we summarize and shows the different possibilities of formulating the NAS problem.
+The Figure \ref{fig:ProblemFormulation} is leaned on a figure of the survey \cite{bib1} we summarize and shows the different possibilities of formulating the NAS problem.
 
 \begin{figure*}[htbp]
 \includegraphics[width=\textwidth]{ProblemFormulation.png}
@@ -129,7 +137,26 @@ The search strategy of hardware-aware NAS consists of three elements: an accurac
 The accuracy is evaluated by training the architectures of the search space and comparing the accuracies. Because it would be very time and computational consuming to train all architectures completely, there exits some methods for estimate the accuracy without a training. First, one can  \textbf{share weights} between different models to reduce the search time. Second method for speeding up the determination of the accuracy is \textbf{early stopping}. This means one train a deep learning model only a few epochs and use the accuracy as an approximation for a complete training. In addition, one can include \textbf{hot start}. Hot starting an architecture search means that the searching and training of an architecture is not started with a random model but with an already known efficient model. Furthermore, \textbf{proxy data set} can be used to only train the deep learning model with some data elements and increase the number in the last steps. In the end there also exits already some \textbf{accuracy prediction models} which use the architecture and data set for predicting the accuracy beforehand. 
 
 \subsection{Hardware Cost Evaluation Method}
-Hardware cost evaluation methods are methods for measuring hardware metrics in real-time or as an estimation. A possible hardware measurement are the \textbf{FLOPs and Model Size}. FLOPs are floating point operations. This means the number of floating point operations and the number of parameters as the model size are used as hardware cost measurement. Unfortunately, the number of FLOPs do not completely correlate with the execution time. This means, FLOPs are not a good indicator to search for efficient architectures, but a small model size leads to fewer memory consumption and automatically searches for compressed models. So, the combination of FLOPs and the model size can be used as a hardware measurement. Another option is to measure the \textbf{latency}. A low latency is important for using NAS in real world applications for ensuring a fast action. Also, the \textbf{energy consumption} measurement can be used as metric for hardware cost evaluation. Possibilities are to use the peak of an energy consumption or the average consumption. Furthermore, the \textbf{area} means that it is desired to take into account to gain the smallest possible chip by evaluating the hardware cost. The area also correlates with the power consumption as well. In the end the \textbf{memory footprint} can be considered as a hardware measurement. As said above the number of parameters from a model is a good indicator for measuring the memory footprint. Another better option is to measure the memory consumption while running.     
+Hardware cost evaluation methods are methods for measuring hardware metrics in real-time or as an estimation. A possible hardware measurement are the \textbf{FLOPs and Model Size}. FLOPs are floating point operations. This means the number of floating point operations and the number of parameters as the model size are used as hardware cost measurement. Unfortunately, the number of FLOPs do not completely correlate with the execution time. This means, FLOPs are not a good indicator to search for efficient architectures, but a small model size leads to fewer memory consumption and automatically searches for compressed models. So, the combination of FLOPs and the model size can be used as a hardware measurement. Another option is to measure the \textbf{latency}. A low latency is important for using NAS in real world applications for ensuring a fast action. Also, the \textbf{energy consumption} measurement can be used as metric for hardware cost evaluation. Possibilities are to use the peak of an energy consumption or the average consumption. Furthermore, the \textbf{area} means that it is desired to take into account to gain the smallest possible chip by evaluating the hardware cost. The area also correlates with the power consumption as well. In the end the \textbf{memory footprint} can be considered as a hardware measurement. As said above the number of parameters from a model is a good indicator for measuring the memory footprint. Another better option is to measure the memory consumption while running. 
+
+\subsection{Calculation of FLOPs and Model Size}
+In our future work we will use the FLOPs and Model size as the numbers of parameters as our hardware cost measurement. Therefore, we present the calculation of FLOPs for convolutional layer and fully connected layers which are the layers we will use in our future work very likely \cite{bib5}. The calculation of FLOPs for convolutional layer is shown in equation ``\eqref{eqn:FLOPs}''.
+
+\begin{equation}
+\label{eqn:FLOPs}
+FLOPs = 2HW(C_{in}K^{2}+1)C_{out}
+\end{equation} 
+
+In the formulation equation ``\eqref{eqn:FLOPs}'' stands $H$ for the height, $W$ for the width, $C_{in}$ are the number of input channels, $K$ for the kernel width and $C_{out}$ is the number of output channels.
+
+The calculation of FLOPs for the fully connected layer is presented in ``\eqref{eqn:FLOPsFCL}'' whereby $I$ is input dimensionality and $O$ is output dimensionality. 
+
+\begin{equation}
+\label{eqn:FLOPsFCL}
+FLOPs = 2(I-1)O
+\end{equation} 
+
+\textbf{Missing calculation of model parameters!}
 
 \subsubsection{Real World Measurements versus Estimation models}
 
@@ -184,18 +211,24 @@ This paper gives a brief overview about hardware-aware NAS for quantized network
 
 \subsection{Future Work}
 
-The idea of our future work is to do hardware-aware NAS for quantized networks. This means our model optimization techniques are focusing on quantization. Maybe we will also add pruning for making the deep learning model smaller. The idea is to use hardware-aware NAS with these model compression methods for designing the model. 
+The idea of our future work is to do hardware-aware NAS for quantized networks. This means our model optimization techniques are focusing on quantization. Maybe we will also add pruning for making the deep learning model smaller. The idea is to use hardware-aware NAS with these model compression methods for designing the model. There already exist some researches which 
 
 We did not decide until now if the NAS process is done as a single-objective optimization or a multi-objective optimization. In general it would be easier to optimize a single objective, i.e. the accuracy because we then mainly focus on the accuracy as the only objective and take the hardware usability after the designing or only with some threshold into account. But a multi-objective optimization would be more precise because it can be that single-objective optimization do not perform well on the specific hardware. So a multi-objective optimization would be desired.
 
-Our goal is to focus on a single target, in our case FPGA's, because it is not really solved until now to find universal deep learning models which perform very well on different hardware platforms. We discussed the limits of transferring hardware-aware NAS across multiple platforms in Section \ref{section:Challenges}. It is not clear until now if we consider a fixed platform configuration or multiple platform configurations for our target. In addition, we focus on server processors where FPGA's belong to and not mobile devices or tiny devices. 
+Our goal is to not focus on a single target, therefore we use the FLOPs and the model size as our hardware cost measurement. But it is not really solved until now to find universal deep learning models which perform very well on different hardware platforms. We discussed the limits of transferring hardware-aware NAS across multiple platforms in Section \ref{section:Challenges}. So if we had to decide a hardware platform for gaining reasonable optimizations, we will choose FGPA's. It is not clear until now if we consider a fixed platform configuration or multiple platform configurations for our target. In addition, we focus on server processors where FPGA's belong to and not mobile devices or tiny devices. 
 
-For clarifying which search space and search algorithm we want to use, we need more research in recent works which use hardware-aware NAS to determine the best search space and search algorithm for our use-case. For now we have a lack of knowledge about different algorithms and search spaces. We are open which accuracy evaluation methods we will use for estimating the accuracy without long training. To measure the hardware cost we will take the number of bit operations or floating point operations and the number of parameters as model size into account. As already mentioned our used NAS framework is Microsoft NNI. 
+For clarifying which search space and search algorithm we want to use, we need more research in recent works which use hardware-aware NAS to determine the best search space and search algorithm for our use-case. For now we have a lack of knowledge about different algorithms and search spaces. We are open which accuracy evaluation methods we will use for estimating the accuracy without long training. To measure the hardware cost we will take the number of bit operations or floating point operations and the number of parameters as model size into account. We are not able to real world measurements, if we stay independent of the hardware platform. Therefore, we have to use estimation models for measuring the hardware cost. 
+
+As already mentioned our used NAS framework is Microsoft NNI\footnote{https://nni.readthedocs.io/en/stable/index.html}. In addition our machine learning framework will be PyTorch \cite{bib4}. Unfortunately there is currently no official support for calculating FLOPs with PyTorch\footnote{https://github.com/pytorch/pytorch/issues/5013}, so we have to calculate it by our own or with third-party libraries. Gaining the model parameters is provided by PyTorch.
+
+
 
 \begin{thebibliography}{00}
 \bibitem{bib1} Hadjer Benmeziane, Kaoutar El Maghraoui, Hamza Ouarnoughi, Smail Niar, Martin Wistuba, Naigang Wang, ``A Comprehensive Survey on Hardware-Aware Neural Architecture Search'', 2021.
 \bibitem{bib2} Krizhevsky, Alex, Ilya Sutskever, and Geoffrey E. Hinton. "Imagenet classification with deep convolutional neural networks." Advances in neural information processing systems 25 (2012): 1097-1105.
 \bibitem{bib3} Collobert, Ronan, et al. "Natural language processing (almost) from scratch." Journal of machine learning research 12.ARTICLE (2011): 2493-2537.
+\bibitem{bib4} Paszke A, Gross S, Massa F, Lerer A, Bradbury J, Chanan G, et al. "PyTorch: An Imperative Style, High-Performance Deep Learning Library." In: Advances in Neural Information Processing Systems 32 [Internet]. Curran Associates, Inc.; 2019. p. 8024–35. Available from: http://papers.neurips.cc/paper/9015-pytorch-an-imperative-style-high-performance-deep-learning-library.pdf
+\bibitem{bib5} Molchanov, Pavlo, et al. "Pruning convolutional neural networks for resource efficient inference." arXiv preprint arXiv:1611.06440 (2016).
 \end{thebibliography}
 
 
